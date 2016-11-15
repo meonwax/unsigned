@@ -15,4 +15,8 @@ public abstract class Overlay {
             content[i] = 0;
         }
     }
+
+    public byte get(int i) {
+        return content[i];
+    }
 }

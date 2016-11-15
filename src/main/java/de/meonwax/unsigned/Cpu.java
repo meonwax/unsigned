@@ -1,7 +1,8 @@
 package de.meonwax.unsigned;
 
 import de.meonwax.unsigned.memory.Memory;
-import de.meonwax.unsigned.util.Utils;
+import de.meonwax.unsigned.util.Logger;
+import de.meonwax.unsigned.util.StringUtils;
 
 public class Cpu {
 
@@ -42,7 +43,7 @@ public class Cpu {
         flags = 0x20;
     }
 
-    public int step() {
+    public int next() {
 
         int cycleCount;
 
@@ -54,7 +55,7 @@ public class Cpu {
             case 0xa9:
                 ac = memory.read(++pc);
                 cycleCount = 2;
-                System.out.println("LDA #$" + Utils.byteToHex(ac));
+                Logger.debug("LDA #$" + StringUtils.byteToHex(ac));
                 break;
 
             // STA absolute
@@ -64,11 +65,11 @@ public class Cpu {
                 int address = addressLow << 8 | addressHigh & 0xff;
                 memory.write(address, ac);
                 cycleCount = 4;
-                System.out.println("STA $" + Utils.integerToHex(address));
+                Logger.debug("STA $" + StringUtils.integerToHex(address));
                 break;
 
             default:
-                System.out.println("Unknown opcode: $" + Utils.byteToHex(opcode));
+                Logger.warn("Unknown opcode: $" + StringUtils.byteToHex(opcode));
                 return -1;
         }
         pc++;

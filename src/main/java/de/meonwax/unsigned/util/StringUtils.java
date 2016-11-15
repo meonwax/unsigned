@@ -1,6 +1,6 @@
 package de.meonwax.unsigned.util;
 
-public class Utils {
+public class StringUtils {
 
     final protected static char[] HEX_CHARS = "0123456789abcdef".toCharArray();
 

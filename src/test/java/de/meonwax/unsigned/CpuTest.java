@@ -13,7 +13,7 @@ public class CpuTest {
         Memory memory = new Memory(64 * 1024);
         Cpu cpu = new Cpu(memory);
 
-        int cycleCount = cpu.step();
+        int cycleCount = cpu.next();
 
         assertEquals(-1, cycleCount);
     }

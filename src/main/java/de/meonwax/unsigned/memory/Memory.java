@@ -3,7 +3,8 @@ package de.meonwax.unsigned.memory;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.meonwax.unsigned.util.Utils;
+import de.meonwax.unsigned.util.Logger;
+import de.meonwax.unsigned.util.StringUtils;
 
 public class Memory {
 
@@ -20,6 +21,9 @@ public class Memory {
         for (int address = 0; address < ram.length; address++) {
             ram[address] = 0;
         }
+        for (Overlay overlay : overlays) {
+            overlay.reset();
+        }
     }
 
     /**
@@ -34,7 +38,7 @@ public class Memory {
      * Write a single byte to memory address
      */
     public void write(int address, byte byteValue) {
-        System.out.println("Memory write. Address: " + Utils.integerToHex(address) + " Value: " + Utils.byteToHex(byteValue));
+        Logger.debug("Memory write. Address: " + StringUtils.integerToHex(address) + " Value: " + StringUtils.byteToHex(byteValue));
         ram[address] = byteValue;
         // TODO: respect overlays
     }
@@ -50,7 +54,8 @@ public class Memory {
     }
 
     public void addOverlay(Overlay overlay, int startAddress) {
-        // TODO:
+        overlays.add(overlay);
+        // TODO: set startAddress
     }
 
     @Override
@@ -59,9 +64,9 @@ public class Memory {
         for (int address = 0; address < ram.length; address++) {
             if (address % 8 == 0) {
                 sb.append("\n");
-                sb.append(Utils.integerToHex(address)).append(":");
+                sb.append(StringUtils.integerToHex(address)).append(":");
             }
-            sb.append(" ").append(Utils.byteToHex(ram[address]));
+            sb.append(" ").append(StringUtils.byteToHex(ram[address]));
         }
         return sb.toString();
     }
