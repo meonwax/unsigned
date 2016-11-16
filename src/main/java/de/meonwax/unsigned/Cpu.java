@@ -1,8 +1,6 @@
 package de.meonwax.unsigned;
 
 import de.meonwax.unsigned.memory.Memory;
-import de.meonwax.unsigned.util.Logger;
-import de.meonwax.unsigned.util.StringUtils;
 
 public class Cpu {
 
@@ -55,7 +53,7 @@ public class Cpu {
             case 0xa9:
                 ac = memory.read(++pc);
                 cycleCount = 2;
-                Logger.debug("LDA #$" + StringUtils.byteToHex(ac));
+//                Logger.debug("LDA #$" + StringUtils.byteToHex(ac));
                 break;
 
             // STA absolute
@@ -65,11 +63,11 @@ public class Cpu {
                 int address = addressLow << 8 | addressHigh & 0xff;
                 memory.write(address, ac);
                 cycleCount = 4;
-                Logger.debug("STA $" + StringUtils.integerToHex(address));
+//                Logger.debug("STA $" + StringUtils.integerToHex(address));
                 break;
 
             default:
-                Logger.warn("Unknown opcode: $" + StringUtils.byteToHex(opcode));
+//                Logger.warn("Unknown opcode: $" + StringUtils.byteToHex(opcode));
                 return -1;
         }
         pc++;

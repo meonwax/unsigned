@@ -51,8 +51,8 @@ public class Display extends Canvas implements Runnable {
     public void update() {
         updateFps();
         for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = i + frameCount;
-            //            pixels[i] = getColor(video.getByte(i));
+            //pixels[i] = i + frameCount;
+            pixels[i] = getColor(video.read(i));
         }
         frameCount++;
         lastDraw = System.currentTimeMillis();

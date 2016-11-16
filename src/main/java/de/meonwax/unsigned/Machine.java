@@ -39,7 +39,7 @@ public class Machine {
             Logger.error("CPU error");
             return false;
         }
-        Logger.info("Cycles: " + this.cycles);
+//        Logger.info("Cycles: " + this.cycles);
         return true;
     }
 

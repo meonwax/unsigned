@@ -5,6 +5,7 @@ import java.io.File;
 
 import de.meonwax.unsigned.gui.Display;
 import de.meonwax.unsigned.util.Logger;
+import de.meonwax.unsigned.util.StringUtils;
 
 public class Main {
 
@@ -25,7 +26,7 @@ public class Main {
             Logger.error("Could not load file '" + FILENAME + "'");
             return;
         }
-        Logger.info("'" + FILENAME + "' loaded to address " + START_ADDRESS);
+        Logger.info("'" + FILENAME + "' loaded to address " + StringUtils.integerToHex(START_ADDRESS));
 
         Logger.info("Running...");
         machine.setStart(START_ADDRESS);
