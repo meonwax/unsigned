@@ -3,10 +3,16 @@ package de.meonwax.unsigned.gui;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics2D;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import de.meonwax.unsigned.memory.Video;
 
@@ -23,7 +29,10 @@ public class Display extends Canvas implements Runnable {
     private int frameCount = 0;
     private float fps = 0f;
 
+    // Video memory
     private Video video = new Video(WIDTH * HEIGHT);
+
+    // Current frame with its pixel representation
     private BufferedImage frame = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     private int[] pixels = ((DataBufferInt) frame.getRaster().getDataBuffer()).getData();
 
@@ -36,16 +45,22 @@ public class Display extends Canvas implements Runnable {
         return video;
     }
 
+    /**
+     * Processing for each frame
+     */
     public void update() {
         updateFps();
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = i + frameCount;
-            // pixels[i] = getColor(video.get(i));
+            //            pixels[i] = getColor(video.getByte(i));
         }
         frameCount++;
         lastDraw = System.currentTimeMillis();
     }
 
+    /**
+     * Render the frame pixels to the canvas
+     */
     public void draw(Graphics2D g) {
 
         // Render frame
@@ -54,7 +69,6 @@ public class Display extends Canvas implements Runnable {
         // Draw FPS indicator
         g.setColor(Color.white);
         g.drawString("FPS: " + Math.round(fps), 10, 20);
-
     }
 
     private void updateFps() {
@@ -64,6 +78,8 @@ public class Display extends Canvas implements Runnable {
     }
 
     /**
+     * Get a color value for a value from the video memory
+     *
      * The values $00 to $0f represent 16 different colors ($00 is black and $01 is white).
      * Storing the value $01 at startAddress draws a white pixel at the top left corner.
      * $0: Black
@@ -122,27 +138,44 @@ public class Display extends Canvas implements Runnable {
         }
     }
 
+    /**
+     * Create a window and start running the refresh thread with the given FPS rate
+     */
+    public void start() {
+        Frame window = new Frame();
+        window.setTitle("Display");
+        window.add(this);
+        window.setResizable(false);
+        window.pack();
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we) {
+                window.dispose();
+                System.exit(0);
+            }
+        });
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(this, 0, 1000 / FPS, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Refresh the display
+     */
     @Override
     public void run() {
-        while (true) {
+        update();
 
-            update();
-
-            BufferStrategy bs = getBufferStrategy();
-            if (bs == null) {
-                createBufferStrategy(2);
-                continue;
-            }
-
-            Graphics2D g = (Graphics2D) bs.getDrawGraphics();
-            draw(g);
-            g.dispose();
-            bs.show();
-
-            try {
-                Thread.sleep(1000 / FPS);
-            } catch (InterruptedException e) {
-            }
+        BufferStrategy bs = getBufferStrategy();
+        if (bs == null) {
+            createBufferStrategy(2);
+            return;
         }
+
+        Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+        draw(g);
+        g.dispose();
+        bs.show();
     }
 }

@@ -1,9 +1,6 @@
 package de.meonwax.unsigned;
 
 import java.awt.EventQueue;
-import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 
 import de.meonwax.unsigned.gui.Display;
@@ -35,9 +32,8 @@ public class Main {
 
         // Display loop
         System.setProperty("sun.java2d.opengl", "true");
-
         EventQueue.invokeLater(() -> {
-            createDisplay(display);
+            display.start();
         });
 
         // Main machine loop
@@ -45,23 +41,5 @@ public class Main {
         }
 
         Logger.info("Machine halted.");
-    }
-
-    private static void createDisplay(Display display) {
-        Frame window = new Frame();
-        window.setTitle("Display");
-        window.add(display);
-        window.setResizable(false);
-        window.pack();
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-        window.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent we) {
-                window.dispose();
-                System.exit(0);
-            }
-        });
-        new Thread(display).start();
     }
 }

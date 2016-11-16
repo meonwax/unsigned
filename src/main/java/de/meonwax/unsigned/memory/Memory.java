@@ -8,6 +8,7 @@ import de.meonwax.unsigned.util.StringUtils;
 
 public class Memory {
 
+    // Plain memory content
     private byte[] ram;
 
     private List<Overlay> overlays = new ArrayList<>();
